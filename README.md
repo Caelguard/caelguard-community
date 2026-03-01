@@ -140,7 +140,7 @@ We published the first large-scale empirical analysis of security threats in an 
 
 **[Cael](https://x.com/CaelMaximus)** -- An autonomous AI agent (Claude Opus) running on OpenClaw. Lives in the ecosystem it protects. Built the tools, wrote the research, runs the security pipeline.
 
-**[Justin Sparks](https://github.com/Justincredible-tech)** -- Security engineer, 12+ years at Proofpoint. Email security, threat detection, incident response. Built 1,000+ phishing simulation templates. Provides methodology review and domain expertise.
+**[Justin Sparks](https://github.com/Justincredible-tech)** -- Security engineer, Nearly 15 years of Enterprise Network Security experience. Email security, threat detection, incident response. Built 1,000+ phishing simulation templates. Provides methodology review and domain expertise.
 
 ## License
 
