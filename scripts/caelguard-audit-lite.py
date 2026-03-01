@@ -23,7 +23,7 @@ import sys
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 class C:
     RED = "\033[91m"

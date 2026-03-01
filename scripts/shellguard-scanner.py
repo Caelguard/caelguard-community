@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -121,11 +121,14 @@ TIER2_COMBINED = [
 
 KNOWN_BAD_IOCS = [
     ("91.92.242.30",   "AMOS stealer C2"),
+    ("91.92.242.31",   "AMOS stealer C2"),
     ("webhook.site",   "Common data exfiltration relay"),
     ("pipedream.net",  "Common data exfiltration relay"),
+    ("pipedream.com",  "Common data exfiltration relay"),
     ("requestbin.com", "Common data exfiltration relay"),
     ("api.telegram.org/bot", "Telegram bot used in exfil campaigns"),
     ("discord.com/api/webhooks", "Discord webhook — check if expected"),
+    ("update-api-claw.xyz",     "Malicious ClawHub-targeting domain (2026-03-01)"),
 ]
 
 

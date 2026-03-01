@@ -78,3 +78,18 @@ Initial release.
 - Workspace token counting across markdown, Python, and config files
 - Cost estimation for 6 models (GPT-4o, Claude Opus, Gemini Pro, and more)
 - Per-file breakdown with largest-file ranking
+
+## [1.1.1] - 2026-03-01
+
+### ShellGuard Scanner Community
+
+**IOC Sync (PRO → Community):**
+- Added `91.92.242.31` (AMOS stealer C2) — PRO already had this, community was missing
+- Added `pipedream.com` (exfiltration relay) — PRO had .com, community had only .net
+- Added `update-api-claw.xyz` (malicious ClawHub-targeting domain, flagged 2026-03-01)
+
+### Caelguard Audit Lite
+
+**Version bump only:** 1.1.0 → 1.1.1 (no new CVE entries; CVE-2025-53109/53110 and WebSocket CVE pending threshold confirmation — see review queue)
+
+**Version:** 1.1.0 → 1.1.1 (patch — IOC sync)
