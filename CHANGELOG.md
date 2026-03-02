@@ -2,7 +2,15 @@
 
 All notable changes to Caelguard Community will be documented here.
 
-## [1.1.0] - 2026-02-28
+## [1.1.2] - 2026-03-02
+
+### ShellGuard Scanner (v1.1.2)
+
+**New patterns (TIER1) — Daily Pipeline:**
+- Supply chain: Fake OpenClawCLI trojan payload name detection (ClawHub campaign 2026-03-01)
+- Supply chain: Trojanized OpenClawCLI installer filename pattern
+
+---
 
 ### ShellGuard Scanner
 

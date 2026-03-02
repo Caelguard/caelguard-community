@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -82,6 +82,11 @@ TIER1_PATTERNS = [
      "Social engineering: bash execution command in plain text"),
     (r"https?://(?:\d{1,3}\.){3}\d{1,3}[:/]",
      "C2 indicator: raw IP address in URL"),
+    # Supply chain: Fake OpenClawCLI redirect (ClawHub campaign 2026-03-01)
+    (r"(?i)(download|install|get|run)\s+(the\s+)?(open\s*claw\s*cli|openclawcli)\b",
+     "Supply chain: reference to 'OpenClawCLI' download (known trojan payload name)"),
+    (r"(?i)openclawcli[-_]?(setup|install|v\d|latest|mac|win|linux)",
+     "Supply chain: trojanized OpenClawCLI installer name pattern"),
 ]
 
 # ─────────────────────────────────────────────────────────────
