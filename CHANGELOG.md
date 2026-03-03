@@ -2,6 +2,13 @@
 
 All notable changes to Caelguard Community will be documented here.
 
+## [1.1.2] - 2026-03-03
+### Security Intelligence Updates (Daily Pipeline)
+- Audit-Lite v1.1.2: Updated minimum safe OpenClaw version from 2026.2.23 to 2026.3.2
+- New minimum covers: CVE-2026-26329 (path traversal browser upload), GHSA-56f2-hvwg-5743 (SSRF image tool), ClawJacked (WebSocket hijacking)
+
+---
+
 ## [1.1.2] - 2026-03-02
 
 ### ShellGuard Scanner (v1.1.2)
