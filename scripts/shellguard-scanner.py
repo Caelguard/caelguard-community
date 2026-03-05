@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -87,6 +87,11 @@ TIER1_PATTERNS = [
      "Supply chain: reference to 'OpenClawCLI' download (known trojan payload name)"),
     (r"(?i)openclawcli[-_]?(setup|install|v\d|latest|mac|win|linux)",
      "Supply chain: trojanized OpenClawCLI installer name pattern"),
+    # Dynamic fetch-and-execute (ToxicSkills research, 2026-03-05)
+    (r"(?:requests\.get|urllib\.request\.urlopen)\s*\([^)]{0,200}\).*?\.(?:text|content|json\s*\(\s*\))\s*.*?\bexec\s*\(",
+     "Dynamic fetch-and-execute: Python requests/urllib result piped to exec()"),
+    (r"(?:requests\.get|urllib\.request\.urlopen)\s*\([^)]{0,200}\).*?\.(?:text|content)\s*.*?\beval\s*\(",
+     "Dynamic fetch-and-execute: Python requests/urllib result piped to eval()"),
 ]
 
 # ─────────────────────────────────────────────────────────────

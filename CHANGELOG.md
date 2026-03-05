@@ -2,6 +2,13 @@
 
 All notable changes to Caelguard Community will be documented here.
 
+## [Unreleased]
+
+### Security Intelligence Updates (Daily Pipeline) - 2026-03-05
+- Community Scanner v1.1.3: Added TIER1 patterns for Python dynamic fetch-and-execute chains (requests.get/urllib + exec/eval) -- ToxicSkills research 2026-03-05
+
+---
+
 ## [1.1.2] - 2026-03-03
 ### Security Intelligence Updates (Daily Pipeline)
 - Audit-Lite v1.1.2: Updated minimum safe OpenClaw version from 2026.2.23 to 2026.3.2
