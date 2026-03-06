@@ -4,6 +4,9 @@ All notable changes to Caelguard Community will be documented here.
 
 ## [Unreleased]
 
+### Security Intelligence Updates (Daily Pipeline) - 2026-03-06
+- Community Scanner v1.1.4: Added hightower6eu to KNOWN_BAD_IOCS (ClawHavoc threat actor publisher account, active in MCP supply chain campaigns)
+
 ### Security Intelligence Updates (Daily Pipeline) - 2026-03-05
 - Community Scanner v1.1.3: Added TIER1 patterns for Python dynamic fetch-and-execute chains (requests.get/urllib + exec/eval) -- ToxicSkills research 2026-03-05
 

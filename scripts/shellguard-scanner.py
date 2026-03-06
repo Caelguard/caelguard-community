@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.3"
+VERSION = "1.1.4"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -139,6 +139,7 @@ KNOWN_BAD_IOCS = [
     ("api.telegram.org/bot", "Telegram bot used in exfil campaigns"),
     ("discord.com/api/webhooks", "Discord webhook — check if expected"),
     ("update-api-claw.xyz",     "Malicious ClawHub-targeting domain (2026-03-01)"),
+    ("hightower6eu",            "ClawHavoc threat actor publisher account (2026-03-06)"),
 ]
 
 
