@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.4"
+VERSION = "1.1.5"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -136,10 +136,16 @@ KNOWN_BAD_IOCS = [
     ("pipedream.net",  "Common data exfiltration relay"),
     ("pipedream.com",  "Common data exfiltration relay"),
     ("requestbin.com", "Common data exfiltration relay"),
-    ("api.telegram.org/bot", "Telegram bot used in exfil campaigns"),
-    ("discord.com/api/webhooks", "Discord webhook — check if expected"),
-    ("update-api-claw.xyz",     "Malicious ClawHub-targeting domain (2026-03-01)"),
-    ("hightower6eu",            "ClawHavoc threat actor publisher account (2026-03-06)"),
+    ("api.telegram.org/bot",      "Telegram bot used in exfil campaigns"),
+    ("discord.com/api/webhooks",  "Discord webhook — check if expected"),
+    ("update-api-claw.xyz",       "Malicious ClawHub-targeting domain (2026-03-01)"),
+    ("hightower6eu",              "ClawHavoc threat actor publisher account (2026-03-06)"),
+    ("198.51.100.45",              "ClawHub supply chain C2 (2026-03-08)"),
+    ("203.0.113.88",               "ClawHub supply chain C2 (2026-03-08)"),
+    ("api.clawhub-updates.com",    "ClawHub supply chain staging domain (2026-03-08)"),
+    ("penligent-metrics.ai",       "ClawHub supply chain tracking domain (2026-03-08)"),
+    ("OpenClaw-Community-Updates", "Known malicious ClawHub publisher account (2026-03-08)"),
+    ("DevTools-Official",          "Known malicious ClawHub publisher account (2026-03-08)"),
 ]
 
 

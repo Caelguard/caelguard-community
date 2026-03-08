@@ -4,6 +4,13 @@ All notable changes to Caelguard Community will be documented here.
 
 ## [Unreleased]
 
+### Security Intelligence Updates (Daily Pipeline) - 2026-03-08
+- Community Scanner v1.1.5: Added ClawHub supply chain C2 IPs: 198.51.100.45, 203.0.113.88
+- Community Scanner v1.1.5: Added ClawHub staging domain: api.clawhub-updates.com
+- Community Scanner v1.1.5: Added ClawHub tracking domain: penligent-metrics.ai
+- Community Scanner v1.1.5: Added malicious publisher accounts: OpenClaw-Community-Updates, DevTools-Official
+- Source: Caelguard Daily Pipeline 2026-03-08 (ClawHub supply chain attack campaign)
+
 ### Security Intelligence Updates (Daily Pipeline) - 2026-03-06
 - Community Scanner v1.1.4: Added hightower6eu to KNOWN_BAD_IOCS (ClawHavoc threat actor publisher account, active in MCP supply chain campaigns)
 
