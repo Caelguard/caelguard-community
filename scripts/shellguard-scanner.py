@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.5"
+VERSION = "1.1.6"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -92,6 +92,14 @@ TIER1_PATTERNS = [
      "Dynamic fetch-and-execute: Python requests/urllib result piped to exec()"),
     (r"(?:requests\.get|urllib\.request\.urlopen)\s*\([^)]{0,200}\).*?\.(?:text|content)\s*.*?\beval\s*\(",
      "Dynamic fetch-and-execute: Python requests/urllib result piped to eval()"),
+    # False-error escalation -- MCP Security Bench taxonomy (arXiv:2510.15994)
+    (r"(?i)(?:error|failed|could not|unable to)\s.{0,80}(?:you (?:need|must|have to)|please|required to)\s.{0,60}(?:provide|send|share|give|paste|enter).{0,40}(?:token|key|secret|api.?key|credential|password|auth)",
+     "MCP attack: false-error escalation -- fake error used to harvest credentials (MSB taxonomy)"),
+    # Supply chain: crypto-tool credential harvesting (ClawHub campaign 2026-03-01)
+    (r"(?i)(enter|provide|paste|type|input).{0,40}(seed\s+phrase|mnemonic|private\s+key|wallet\s+password)",
+     "Supply chain: credential harvesting -- requests crypto wallet credentials"),
+    (r"(?i)(import|restore|recover)\s+(your\s+)?(wallet|seed|mnemonic)",
+     "Supply chain: crypto wallet recovery instruction (common disguise vector)"),
 ]
 
 # ─────────────────────────────────────────────────────────────

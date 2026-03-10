@@ -23,7 +23,7 @@ import sys
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 class C:
     RED = "\033[91m"
@@ -390,7 +390,7 @@ class AuditLite:
             ver_str = ".".join(str(x) for x in ver)
             self._add(Finding("GW-11", "gateway", "OpenClaw version below minimum safe",
                 "CRITICAL", "FAIL",
-                f"v{ver_str} < 2026.3.2 (CVE-2026-26329 path traversal, GHSA-56f2 SSRF, ClawJacked WebSocket hijacking -- all patched in 2026.3.2)",
+                f"v{ver_str} < 2026.3.2 (CVE-2026-26329 path traversal, GHSA-56f2 SSRF, ClawJacked WebSocket hijacking CVE-2026-25253, EscapeRoute MCP sandbox escape CVE-2025-53109 & CVE-2025-53110 -- all patched in 2026.3.2)",
                 "Run: openclaw update"))
         else:
             ver_str = ".".join(str(x) for x in ver)

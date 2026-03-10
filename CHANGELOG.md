@@ -4,6 +4,11 @@ All notable changes to Caelguard Community will be documented here.
 
 ## [Unreleased]
 
+### Security Intelligence Updates (Daily Pipeline) - 2026-03-10
+- Community Scanner v1.1.6: Added TIER1 pattern for MCP false-error escalation credential harvesting (arXiv:2510.15994 MCP Security Bench taxonomy)
+- Community Scanner v1.1.6: Added TIER1 patterns for crypto wallet credential harvesting (ClawHub campaign 2026-03-01 -- seed phrase, mnemonic, private key)
+- Audit Lite v1.1.3: Updated GW-11 version check detail to include EscapeRoute CVEs (CVE-2025-53109, CVE-2025-53110)
+
 ### Security Intelligence Updates (Daily Pipeline) - 2026-03-08
 - Community Scanner v1.1.5: Added ClawHub supply chain C2 IPs: 198.51.100.45, 203.0.113.88
 - Community Scanner v1.1.5: Added ClawHub staging domain: api.clawhub-updates.com
