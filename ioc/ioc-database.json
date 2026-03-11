@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-03-11T14:00:00Z",
+  "description": "Caelguard IOC Database -- Known malicious hashes, domains, IPs, and patterns for OpenClaw agent security",
+  "sources": [
+    "Caelguard threat research",
+    "CNCERT/CC OpenClaw advisories (2026-03-08, 2026-03-10)",
+    "Oasis Security CVE-2026-28472 disclosure",
+    "ClawHavoc campaign analysis",
+    "Community reports"
+  ],
+  "malicious_hashes": {
+    "_description": "SHA-256 hashes of known malicious skill files. Campaign field identifies the threat group/campaign.",
+    "entries": [
+      {
+        "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "campaign": "empty_file_placeholder",
+        "severity": "INFO",
+        "description": "Empty file hash (SHA-256 of empty string). Used as placeholder -- not malicious itself.",
+        "date_added": "2026-03-11"
+      }
+    ]
+  },
+  "malicious_domains": {
+    "_description": "Domains associated with C2, exfiltration, or malicious skill distribution.",
+    "entries": [
+      "webhook.site",
+      "requestbin.com",
+      "pipedream.net",
+      "hookbin.com",
+      "beeceptor.com",
+      "mockbin.org",
+      "httpdump.app",
+      "smee.io",
+      "ngrok.io",
+      "burpcollaborator.net",
+      "oastify.com",
+      "interact.sh",
+      "canarytokens.com"
+    ]
+  },
+  "c2_ips": {
+    "_description": "Known command and control IP addresses. Check connection logs against these.",
+    "entries": []
+  },
+  "typosquat_patterns": {
+    "_description": "Known typosquat skill names that impersonate legitimate skills.",
+    "legitimate_names": [
+      "web-search", "brave-search", "code", "github", "git-essentials",
+      "docker-essentials", "spotify", "spotify-player", "weather",
+      "skill-creator", "healthcheck", "discord", "clawhub",
+      "frontend-design", "clean-code"
+    ],
+    "known_typosquats": [
+      "brrave-search", "web-serach", "web_search", "websearch",
+      "brave_search", "bravesearch", "githb", "gihub", "git-hub",
+      "docker_essentials", "doker-essentials",
+      "spotifly", "spotfy", "spotify-playr",
+      "skill-creater", "skilcreator",
+      "healthchek", "helthcheck",
+      "discrod", "dicord",
+      "fronted-design", "frontend-desing",
+      "clean-cod", "cleancode"
+    ]
+  },
+  "dangerous_prerequisites": {
+    "_description": "Patterns in README files that indicate dangerous installation prerequisites.",
+    "patterns": [
+      "curl.*\\|.*sh",
+      "curl.*\\|.*bash",
+      "wget.*\\|.*sh",
+      "wget.*\\|.*bash",
+      "pip install.*--break-system-packages",
+      "chmod 777",
+      "chmod \\+x.*&&.*\\./",
+      "sudo.*curl",
+      "npm install -g.*&&",
+      "docker run.*--privileged",
+      "LD_PRELOAD",
+      "DYLD_INSERT_LIBRARIES",
+      "NODE_OPTIONS.*--require"
+    ]
+  },
+  "mcp_attack_patterns": {
+    "_description": "Patterns indicating MCP server manipulation, response poisoning, or trust boundary violations.",
+    "patterns": [
+      {
+        "pattern": "tool_result.*\\{.*\"text\".*ignore.*previous",
+        "description": "MCP response injection: tool result contains prompt injection",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "server.*proxy.*forward.*tool_call",
+        "description": "MCP proxy interception: man-in-the-middle on tool calls",
+        "severity": "HIGH"
+      },
+      {
+        "pattern": "override.*tool_name|replace.*tool_call|intercept.*function",
+        "description": "MCP tool shadowing: replacing legitimate tool calls",
+        "severity": "HIGH"
+      }
+    ]
+  },
+  "shell_decode_patterns": {
+    "_description": "Shell command patterns that decode and execute obfuscated payloads. Added v1.1.6.",
+    "patterns": [
+      "base64\\s+-d\\s*\\|\\s*(ba)?sh",
+      "base64\\s+--decode\\s*\\|\\s*(ba)?sh",
+      "echo\\s+[A-Za-z0-9+/=]{20,}\\s*\\|\\s*base64\\s+-d",
+      "python3?\\s+-c\\s+.*base64.*decode.*exec",
+      "perl\\s+-e\\s+.*decode_base64.*system",
+      "printf\\s+.*\\\\x[0-9a-f]{2}.*\\|\\s*(ba)?sh",
+      "xxd\\s+-r\\s+-p\\s*\\|\\s*(ba)?sh"
+    ]
+  },
+  "crypto_wallet_patterns": {
+    "_description": "Patterns indicating cryptocurrency wallet credential harvesting. Added v1.1.6.",
+    "patterns": [
+      "\\.ethereum/keystore",
+      "\\.bitcoin/wallet\\.dat",
+      "wallet\\.json.*seed|seed.*wallet\\.json",
+      "mnemonic.*phrase|phrase.*mnemonic",
+      "solana.*keypair|keypair.*solana",
+      "metamask.*vault|vault.*metamask",
+      "phantom.*wallet|wallet.*phantom"
+    ]
+  }
+}

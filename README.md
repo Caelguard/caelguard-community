@@ -19,7 +19,7 @@ These are not theoretical risks. These are documented, in-the-wild attacks happe
 Three free tools. No API keys. No external dependencies. Python 3.8+.
 
 ```bash
-git clone https://github.com/Justincredible-tech/caelguard-community.git
+git clone https://github.com/Caelguard/caelguard-community.git
 cd caelguard-community
 ```
 

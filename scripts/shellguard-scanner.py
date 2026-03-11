@@ -17,6 +17,7 @@ Copyright (c) 2026 ShellGuard. All rights reserved.
 import argparse
 import base64
 import glob
+import hashlib
 import json
 import math
 import os
@@ -31,9 +32,10 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.7"
+VERSION = "2.0.0"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
+IOC_DATABASE_PATH = os.path.expanduser("~/.openclaw/workspace/projects/caelguard/ioc/ioc-database.json")
 
 COMMON_SKILL_NAMES = [
     "web-search", "code", "git", "github", "spotify", "docker",
@@ -76,35 +78,6 @@ TIER1_PATTERNS = [
      "Prompt injection: memory wipe attempt"),
     (r"new\s+system\s+prompt\s*:",
      "Prompt injection: system prompt replacement"),
-    (r"(?<![`\'\"])\b(curl|wget)\s+https?://\S+",
-     "Social engineering: shell download command in plain text (not in code block)"),
-    (r"(?<![`\'\"])\bbash\s+<\s*\(|\bbash\s+-c\s+[\'\"\$]",
-     "Social engineering: bash execution command in plain text"),
-    # Supply chain: Base64-encoded shell payload execution (ClawHub attack, 2026-03-11)
-    (r"(?:echo|printf)\s+[A-Za-z0-9+/=]{20,}\s*\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:bash|sh|python\d?|ruby|perl)",
-     "Supply chain: base64-encoded payload decoded and piped to shell (ClawHub attack vector)"),
-    (r"\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:bash|sh|python\d?|ruby|perl)",
-     "Supply chain: base64 decode pipe to shell interpreter"),
-    (r"https?://(?:\d{1,3}\.){3}\d{1,3}[:/]",
-     "C2 indicator: raw IP address in URL"),
-    # Supply chain: Fake OpenClawCLI redirect (ClawHub campaign 2026-03-01)
-    (r"(?i)(download|install|get|run)\s+(the\s+)?(open\s*claw\s*cli|openclawcli)\b",
-     "Supply chain: reference to 'OpenClawCLI' download (known trojan payload name)"),
-    (r"(?i)openclawcli[-_]?(setup|install|v\d|latest|mac|win|linux)",
-     "Supply chain: trojanized OpenClawCLI installer name pattern"),
-    # Dynamic fetch-and-execute (ToxicSkills research, 2026-03-05)
-    (r"(?:requests\.get|urllib\.request\.urlopen)\s*\([^)]{0,200}\).*?\.(?:text|content|json\s*\(\s*\))\s*.*?\bexec\s*\(",
-     "Dynamic fetch-and-execute: Python requests/urllib result piped to exec()"),
-    (r"(?:requests\.get|urllib\.request\.urlopen)\s*\([^)]{0,200}\).*?\.(?:text|content)\s*.*?\beval\s*\(",
-     "Dynamic fetch-and-execute: Python requests/urllib result piped to eval()"),
-    # False-error escalation -- MCP Security Bench taxonomy (arXiv:2510.15994)
-    (r"(?i)(?:error|failed|could not|unable to)\s.{0,80}(?:you (?:need|must|have to)|please|required to)\s.{0,60}(?:provide|send|share|give|paste|enter).{0,40}(?:token|key|secret|api.?key|credential|password|auth)",
-     "MCP attack: false-error escalation -- fake error used to harvest credentials (MSB taxonomy)"),
-    # Supply chain: crypto-tool credential harvesting (ClawHub campaign 2026-03-01)
-    (r"(?i)(enter|provide|paste|type|input).{0,40}(seed\s+phrase|mnemonic|private\s+key|wallet\s+password)",
-     "Supply chain: credential harvesting -- requests crypto wallet credentials"),
-    (r"(?i)(import|restore|recover)\s+(your\s+)?(wallet|seed|mnemonic)",
-     "Supply chain: crypto wallet recovery instruction (common disguise vector)"),
 ]
 
 # ─────────────────────────────────────────────────────────────
@@ -135,71 +108,6 @@ TIER2_COMBINED = [
         "description": "Credential access combined with network calls",
     },
 ]
-
-
-# ─────────────────────────────────────────────────────────────
-# Known-Bad IOCs (Community — limited set)
-# Full database available in Caelguard Pro
-# ─────────────────────────────────────────────────────────────
-
-KNOWN_BAD_IOCS = [
-    ("91.92.242.30",   "AMOS stealer C2"),
-    ("91.92.242.31",   "AMOS stealer C2"),
-    ("webhook.site",   "Common data exfiltration relay"),
-    ("pipedream.net",  "Common data exfiltration relay"),
-    ("pipedream.com",  "Common data exfiltration relay"),
-    ("requestbin.com", "Common data exfiltration relay"),
-    ("api.telegram.org/bot",      "Telegram bot used in exfil campaigns"),
-    ("discord.com/api/webhooks",  "Discord webhook — check if expected"),
-    ("update-api-claw.xyz",       "Malicious ClawHub-targeting domain (2026-03-01)"),
-    ("hightower6eu",              "ClawHavoc threat actor publisher account (2026-03-06)"),
-    ("198.51.100.45",              "ClawHub supply chain C2 (2026-03-08)"),
-    ("203.0.113.88",               "ClawHub supply chain C2 (2026-03-08)"),
-    ("api.clawhub-updates.com",    "ClawHub supply chain staging domain (2026-03-08)"),
-    ("penligent-metrics.ai",       "ClawHub supply chain tracking domain (2026-03-08)"),
-    ("OpenClaw-Community-Updates", "Known malicious ClawHub publisher account (2026-03-08)"),
-    ("DevTools-Official",          "Known malicious ClawHub publisher account (2026-03-08)"),
-]
-
-
-def check_iocs(text: str) -> list[dict]:
-    """Check text for known-bad indicators of compromise (limited community set)."""
-    hits = []
-    for ioc, description in KNOWN_BAD_IOCS:
-        if ioc in text:
-            hits.append({"ioc": ioc, "description": description})
-    return hits
-
-
-def check_prerequisites_warning(text: str) -> list[dict]:
-    """
-    Check if a Prerequisites/Requirements section contains shell commands.
-    Community edition: simple warning only.
-    Pro edition: full social engineering analysis across all sections.
-    """
-    findings = []
-    # Find prerequisites/requirements sections
-    section_re = re.compile(
-        r"^#{1,4}\s*(?:prerequisites?|requirements?|before\s+you\s+(?:begin|start|install))\s*$",
-        re.IGNORECASE | re.MULTILINE,
-    )
-    # Split on section headers
-    parts = re.split(r"(?m)^#{1,4}\s+", text)
-    headers = re.findall(r"(?m)^#{1,4}\s+(.*?)$", text)
-
-    for i, header in enumerate(headers):
-        if re.match(r"prerequisites?|requirements?|before\s+you\s+(?:begin|start|install)", header, re.IGNORECASE):
-            if i + 1 < len(parts):
-                section_body = parts[i + 1]
-                # Look for shell commands outside of code blocks
-                code_block_re = re.compile(r"```[\s\S]*?```", re.DOTALL)
-                clean_body = code_block_re.sub("", section_body)
-                if re.search(r"\b(curl|wget|bash|sh|pip\s+install|apt\s+install|brew\s+install)\b", clean_body, re.IGNORECASE):
-                    findings.append({
-                        "header": header.strip(),
-                        "detail": "Prerequisites section contains shell commands outside code blocks — verify manually before running",
-                    })
-    return findings
 
 # ─────────────────────────────────────────────────────────────
 # Tier 3: Contextual flags
@@ -266,6 +174,158 @@ def word_has_mixed_scripts(word: str) -> bool:
             if s not in ("OTHER", "UNKNOWN"):
                 scripts.add(s)
     return len(scripts) > 1
+
+
+def sha256_file(filepath: str) -> str:
+    """Compute SHA-256 hash of a file."""
+    h = hashlib.sha256()
+    try:
+        with open(filepath, "rb") as f:
+            for chunk in iter(lambda: f.read(8192), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except (OSError, IOError):
+        return ""
+
+
+def sha256_string(text: str) -> str:
+    """Compute SHA-256 hash of a string."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def load_ioc_database() -> dict:
+    """Load the Caelguard IOC database."""
+    if os.path.isfile(IOC_DATABASE_PATH):
+        try:
+            with open(IOC_DATABASE_PATH, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def check_hash_ioc(file_hash: str, ioc_db: dict) -> dict | None:
+    """Check a file hash against known malicious hashes in the IOC database."""
+    entries = ioc_db.get("malicious_hashes", {}).get("entries", [])
+    for entry in entries:
+        if entry.get("hash") == file_hash and entry.get("severity") != "INFO":
+            return entry
+    return None
+
+
+def check_domain_ioc(text: str, ioc_db: dict) -> list[str]:
+    """Check text for references to known malicious domains."""
+    domains = ioc_db.get("malicious_domains", {}).get("entries", [])
+    found = []
+    for domain in domains:
+        if domain.lower() in text.lower():
+            found.append(domain)
+    return found
+
+
+def check_typosquat_ioc(skill_name: str, ioc_db: dict) -> str | None:
+    """Check if a skill name matches known typosquat patterns from IOC database."""
+    known_squats = ioc_db.get("typosquat_patterns", {}).get("known_typosquats", [])
+    if skill_name.lower() in [s.lower() for s in known_squats]:
+        return skill_name
+    return None
+
+
+def check_shell_decode_patterns(text: str, ioc_db: dict) -> list[dict]:
+    """Check for shell decode-and-execute patterns from IOC database."""
+    patterns = ioc_db.get("shell_decode_patterns", {}).get("patterns", [])
+    findings = []
+    lines = text.split("\n")
+    for line_num, line in enumerate(lines, 1):
+        for pattern_str in patterns:
+            if re.search(pattern_str, line, re.IGNORECASE):
+                findings.append({
+                    "pattern": pattern_str,
+                    "line": line_num,
+                    "match": line.strip()[:120],
+                })
+    return findings
+
+
+def check_crypto_wallet_patterns(text: str, ioc_db: dict) -> list[dict]:
+    """Check for cryptocurrency wallet credential harvesting patterns."""
+    patterns = ioc_db.get("crypto_wallet_patterns", {}).get("patterns", [])
+    findings = []
+    lines = text.split("\n")
+    for line_num, line in enumerate(lines, 1):
+        for pattern_str in patterns:
+            if re.search(pattern_str, line, re.IGNORECASE):
+                findings.append({
+                    "pattern": pattern_str,
+                    "line": line_num,
+                    "match": line.strip()[:120],
+                })
+    return findings
+
+
+def check_mcp_attack_patterns(text: str, ioc_db: dict) -> list[dict]:
+    """Check for MCP server attack patterns."""
+    patterns = ioc_db.get("mcp_attack_patterns", {}).get("patterns", [])
+    findings = []
+    lines = text.split("\n")
+    for line_num, line in enumerate(lines, 1):
+        for entry in patterns:
+            if re.search(entry["pattern"], line, re.IGNORECASE):
+                findings.append({
+                    "pattern": entry["description"],
+                    "severity": entry.get("severity", "HIGH"),
+                    "line": line_num,
+                    "match": line.strip()[:120],
+                })
+    return findings
+
+
+def get_skill_publisher_info(skill_dir: str) -> dict:
+    """Extract publisher/provenance information from a skill directory."""
+    info = {
+        "has_skill_json": False,
+        "has_readme": False,
+        "has_license": False,
+        "publisher": None,
+        "version": None,
+        "source_url": None,
+        "checksum_file": False,
+        "signed": False,
+        "github_account_age_days": None,
+    }
+
+    # Check for skill.json metadata
+    skill_json_path = os.path.join(skill_dir, "skill.json")
+    if os.path.isfile(skill_json_path):
+        info["has_skill_json"] = True
+        try:
+            with open(skill_json_path) as f:
+                meta = json.load(f)
+            info["publisher"] = meta.get("author") or meta.get("publisher")
+            info["version"] = meta.get("version")
+            info["source_url"] = meta.get("repository") or meta.get("source") or meta.get("homepage")
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    # Check for README
+    for name in ["README.md", "readme.md", "Readme.md"]:
+        if os.path.isfile(os.path.join(skill_dir, name)):
+            info["has_readme"] = True
+            break
+
+    # Check for LICENSE
+    for name in ["LICENSE", "LICENSE.md", "LICENSE.txt", "license", "COPYING"]:
+        if os.path.isfile(os.path.join(skill_dir, name)):
+            info["has_license"] = True
+            break
+
+    # Check for checksums
+    for name in ["checksums.json", "checksums.sha256", "CHECKSUMS"]:
+        if os.path.isfile(os.path.join(skill_dir, name)):
+            info["checksum_file"] = True
+            break
+
+    return info
 
 
 def is_base64_candidate(s: str) -> bool:
@@ -481,25 +541,6 @@ def scan_file(filepath: str) -> dict:
                 "line": line_num,
             })
 
-    # IOC check (community — limited set)
-    ioc_hits = check_iocs(text)
-    for hit in ioc_hits:
-        result["tier1"].append({
-            "pattern": f"IOC match: {hit['description']}",
-            "line": 0,
-            "match": f"Indicator: {hit['ioc']}",
-        })
-
-    # Prerequisites section shell command warning
-    if filename.endswith(".md") or not filename:
-        prereq_warnings = check_prerequisites_warning(text)
-        for w in prereq_warnings:
-            result["tier2"].append({
-                "pattern": w["detail"],
-                "line": 0,
-                "match": f"Section: {w['header']}",
-            })
-
     # Obfuscation pipeline
     result["obfuscation"] = detect_obfuscation(text, filename)
 
@@ -511,9 +552,11 @@ def scan_file(filepath: str) -> dict:
     return result
 
 
-def scan_skill(skill_path: str) -> dict:
+def scan_skill(skill_path: str, ioc_db: dict = None) -> dict:
     """Scan an entire skill directory or a single SKILL.md file."""
     skill_path = os.path.abspath(skill_path)
+    if ioc_db is None:
+        ioc_db = load_ioc_database()
 
     if os.path.isfile(skill_path):
         skill_dir = os.path.dirname(skill_path)
@@ -657,16 +700,103 @@ def scan_skill(skill_path: str) -> dict:
 
     scores["exfiltration"] = min(10, ex_score)
 
-    # Overall
+    # 7. IOC Database Checks (NEW in v2.0)
+    ioc_score = 0
+    ioc_findings = []
+
+    if ioc_db:
+        # Hash checks against IOC database
+        for fp in sorted(files_to_scan):
+            file_hash = sha256_file(fp)
+            if file_hash:
+                ioc_hit = check_hash_ioc(file_hash, ioc_db)
+                if ioc_hit:
+                    ioc_score += 25  # Known malicious = max score
+                    ioc_findings.append(
+                        f"[IOC] KNOWN MALICIOUS: {os.path.basename(fp)} matches campaign '{ioc_hit['campaign']}' "
+                        f"(SHA-256: {file_hash[:16]}...)"
+                    )
+
+        # Domain checks
+        malicious_domains = check_domain_ioc(all_text, ioc_db)
+        for domain in malicious_domains:
+            ioc_score += 5
+            ioc_findings.append(f"[IOC] Malicious domain reference: {domain}")
+
+        # Typosquat check from IOC database
+        typosquat = check_typosquat_ioc(skill_name, ioc_db)
+        if typosquat:
+            ioc_score += 10
+            ioc_findings.append(f"[IOC] Known typosquat pattern: '{skill_name}'")
+
+        # Shell decode patterns
+        shell_decode = check_shell_decode_patterns(all_text, ioc_db)
+        for hit in shell_decode:
+            ioc_score += 8
+            ioc_findings.append(f"[IOC] Shell decode-and-execute: line {hit['line']}")
+
+        # Crypto wallet patterns
+        crypto_hits = check_crypto_wallet_patterns(all_text, ioc_db)
+        for hit in crypto_hits:
+            ioc_score += 6
+            ioc_findings.append(f"[IOC] Crypto wallet harvesting pattern: line {hit['line']}")
+
+        # MCP attack patterns
+        mcp_hits = check_mcp_attack_patterns(all_text, ioc_db)
+        for hit in mcp_hits:
+            ioc_score += 8
+            ioc_findings.append(f"[IOC] MCP attack pattern ({hit['severity']}): {hit['pattern']} (line {hit['line']})")
+
+    scores["ioc_threats"] = min(25, ioc_score)
+    report["findings_summary"].extend(ioc_findings)
+
+    # 8. Publisher Verification (NEW in v2.0)
+    pub_score = 0
+    pub_findings = []
+
+    publisher_info = get_skill_publisher_info(skill_dir)
+    report["publisher_info"] = publisher_info
+
+    if not publisher_info["has_skill_json"]:
+        pub_score += 3
+        pub_findings.append("[PUBLISHER] No skill.json metadata file")
+
+    if not publisher_info["publisher"]:
+        pub_score += 4
+        pub_findings.append("[PUBLISHER] No publisher/author identified")
+
+    if not publisher_info["has_license"]:
+        pub_score += 2
+        pub_findings.append("[PUBLISHER] No LICENSE file")
+
+    if not publisher_info["source_url"]:
+        pub_score += 3
+        pub_findings.append("[PUBLISHER] No source repository URL")
+
+    if not publisher_info["checksum_file"]:
+        pub_score += 2
+        pub_findings.append("[PUBLISHER] No checksum file for integrity verification")
+
+    # Check if publisher matches known trusted publishers
+    trusted_publishers = ["openclaw", "anthropic", "justincredible-tech", "caelguard"]
+    if publisher_info["publisher"]:
+        pub_name = publisher_info["publisher"].lower().replace(" ", "-")
+        if any(tp in pub_name for tp in trusted_publishers):
+            pub_score = max(0, pub_score - 5)  # Trusted publisher bonus
+
+    scores["publisher_verification"] = min(15, pub_score)
+    report["findings_summary"].extend(pub_findings)
+
+    # Overall (updated weights for v2.0)
     overall = sum(scores.values())
     report["scores"] = scores
     report["overall_score"] = overall
 
-    if overall <= 25:
+    if overall <= 30:
         report["rating"] = "green"
-    elif overall <= 50:
+    elif overall <= 60:
         report["rating"] = "yellow"
-    elif overall <= 75:
+    elif overall <= 90:
         report["rating"] = "orange"
     else:
         report["rating"] = "red"
@@ -725,9 +855,11 @@ def print_report(report: dict) -> None:
     print()
     categories = [
         ("Prompt Injection", "prompt_injection", 25),
+        ("IOC Threats", "ioc_threats", 25),
         ("Obfuscation", "obfuscation", 20),
         ("Code Execution", "code_execution", 20),
         ("Tool Shadowing", "tool_shadowing", 15),
+        ("Publisher Verification", "publisher_verification", 15),
         ("Metadata/Provenance", "metadata_provenance", 10),
         ("Exfiltration", "exfiltration", 10),
     ]
@@ -820,12 +952,22 @@ def main():
             sys.exit(1)
         targets.append(args.path)
 
+    # Load IOC database once for all scans
+    ioc_db = load_ioc_database()
+    if ioc_db:
+        ioc_version = ioc_db.get("version", "unknown")
+        ioc_updated = ioc_db.get("last_updated", "unknown")
+        if not args.json:
+            print(f"  {C.DIM}IOC Database: v{ioc_version} (updated {ioc_updated}){C.RESET}")
+    elif not args.json:
+        print(f"  {C.YELLOW}⚠ IOC database not found at {IOC_DATABASE_PATH}{C.RESET}")
+
     reports = []
     worst_rating = "green"
     rating_order = {"green": 0, "yellow": 1, "orange": 2, "red": 3}
 
     for target in targets:
-        report = scan_skill(target)
+        report = scan_skill(target, ioc_db=ioc_db)
         reports.append(report)
         if rating_order.get(report["rating"], 0) > rating_order.get(worst_rating, 0):
             worst_rating = report["rating"]
