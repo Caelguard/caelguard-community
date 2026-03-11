@@ -31,7 +31,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "1.1.6"
+VERSION = "1.1.7"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 
@@ -80,6 +80,11 @@ TIER1_PATTERNS = [
      "Social engineering: shell download command in plain text (not in code block)"),
     (r"(?<![`\'\"])\bbash\s+<\s*\(|\bbash\s+-c\s+[\'\"\$]",
      "Social engineering: bash execution command in plain text"),
+    # Supply chain: Base64-encoded shell payload execution (ClawHub attack, 2026-03-11)
+    (r"(?:echo|printf)\s+[A-Za-z0-9+/=]{20,}\s*\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:bash|sh|python\d?|ruby|perl)",
+     "Supply chain: base64-encoded payload decoded and piped to shell (ClawHub attack vector)"),
+    (r"\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:bash|sh|python\d?|ruby|perl)",
+     "Supply chain: base64 decode pipe to shell interpreter"),
     (r"https?://(?:\d{1,3}\.){3}\d{1,3}[:/]",
      "C2 indicator: raw IP address in URL"),
     # Supply chain: Fake OpenClawCLI redirect (ClawHub campaign 2026-03-01)
