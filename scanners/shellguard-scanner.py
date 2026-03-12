@@ -32,7 +32,7 @@ from typing import Any
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 
 WORKSPACE_SKILLS_DIR = os.path.expanduser("~/.openclaw/workspace/skills")
 IOC_DATABASE_PATH = os.path.expanduser("~/.openclaw/workspace/projects/caelguard/ioc/ioc-database.json")
@@ -78,6 +78,11 @@ TIER1_PATTERNS = [
      "Prompt injection: memory wipe attempt"),
     (r"new\s+system\s+prompt\s*:",
      "Prompt injection: system prompt replacement"),
+    # Supply chain: Base64-encoded shell payload execution (ClawHub attack, 2026-03-11)
+    (r"(?:echo|printf)\s+[A-Za-z0-9+/=]{20,}\s*\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:bash|sh|python\d?|ruby|perl)",
+     "Supply chain: base64-encoded payload decoded and piped to shell (ClawHub attack vector)"),
+    (r"\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:bash|sh|python\d?|ruby|perl)",
+     "Supply chain: base64 decode pipe to shell interpreter"),
 ]
 
 # ─────────────────────────────────────────────────────────────

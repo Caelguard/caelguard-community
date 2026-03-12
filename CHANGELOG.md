@@ -2,6 +2,10 @@
 
 All notable changes to Caelguard Community will be documented here.
 
+## [2.0.1] - 2026-03-12
+### Security
+- Added TIER1 detection patterns for shell-level base64 decode payload execution (ClawHub campaign attack vector)
+
 ## [patch] 2026-03-11 - Added TIER1 detection patterns for shell-level base64 decode pipeline (ClawHub attack vector, 2026-03-11 pipeline)
 
 ## [Unreleased]
