@@ -1,13 +1,16 @@
 {
-  "version": "1.0.0",
-  "last_updated": "2026-03-11T14:00:00Z",
+  "version": "1.1.0",
+  "last_updated": "2026-03-13T02:45:00Z",
   "description": "Caelguard IOC Database -- Known malicious hashes, domains, IPs, and patterns for OpenClaw agent security",
   "sources": [
     "Caelguard threat research",
     "CNCERT/CC OpenClaw advisories (2026-03-08, 2026-03-10)",
     "Oasis Security CVE-2026-28472 disclosure",
     "ClawHavoc campaign analysis",
-    "Community reports"
+    "Community reports",
+    "dailycve.com (2026-03-11: CVE-2026-29787, CVE-2026-32111)",
+    "thehackerwire.com (2026-03-10: CVE-2026-26118)",
+    "advisories.gitlab.com (2026-03-09: CVE-2026-27826)"
   ],
   "malicious_hashes": {
     "_description": "SHA-256 hashes of known malicious skill files. Campaign field identifies the threat group/campaign.",
@@ -36,7 +39,11 @@
       "burpcollaborator.net",
       "oastify.com",
       "interact.sh",
-      "canarytokens.com"
+      "canarytokens.com",
+      "update-api-claw.xyz",
+      "api.telegram.org",
+      "pipedream.com",
+      "paste.ee"
     ]
   },
   "c2_ips": {
@@ -49,7 +56,11 @@
       "web-search", "brave-search", "code", "github", "git-essentials",
       "docker-essentials", "spotify", "spotify-player", "weather",
       "skill-creator", "healthcheck", "discord", "clawhub",
-      "frontend-design", "clean-code"
+      "frontend-design", "clean-code",
+      "google", "gmail", "google-calendar", "google-drive",
+      "twitter", "x-twitter",
+      "notion", "slack", "linear", "jira", "confluence",
+      "openai", "anthropic"
     ],
     "known_typosquats": [
       "brrave-search", "web-serach", "web_search", "websearch",
@@ -60,7 +71,12 @@
       "healthchek", "helthcheck",
       "discrod", "dicord",
       "fronted-design", "frontend-desing",
-      "clean-cod", "cleancode"
+      "clean-cod", "cleancode",
+      "gogle", "gooogle", "googgle", "g00gle", "gmai1", "gmaill",
+      "tw1tter", "twiter", "twtter", "twittter",
+      "noti0n", "n0tion", "notoin",
+      "sIack", "slak", "s1ack",
+      "0penai", "opena1", "anthrop1c"
     ]
   },
   "dangerous_prerequisites": {

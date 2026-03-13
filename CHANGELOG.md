@@ -2,6 +2,14 @@
 
 All notable changes to Caelguard Community will be documented here.
 
+## [1.1.0] - 2026-03-13
+### Security Intelligence Updates (Daily Pipeline)
+- IOC Database v1.1.0: Added missing exfil domains to malicious_domains: update-api-claw.xyz, api.telegram.org, pipedream.com, paste.ee (sync with quarantine-monitor.py EXFIL_DOMAINS)
+- IOC Database v1.1.0: Added google, gmail, google-calendar, google-drive, twitter, x-twitter, notion, slack, linear, jira, confluence, openai, anthropic to typosquat_patterns.legitimate_names (ClawHavoc wrapper attack surface)
+- IOC Database v1.1.0: Added observed ClawHavoc typosquat variants for google/twitter/notion/slack/openai/anthropic to known_typosquats list
+- IOC Database v1.1.0: Updated sources to include dailycve.com, thehackerwire.com, advisories.gitlab.com pipeline feeds
+- IOC Database v1.1.0: Bumped version 1.0.0 -> 1.1.0, last_updated 2026-03-13
+
 ## [2.0.1] - 2026-03-12
 ### Security
 - Added TIER1 detection patterns for shell-level base64 decode payload execution (ClawHub campaign attack vector)
