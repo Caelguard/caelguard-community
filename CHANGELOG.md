@@ -2,6 +2,11 @@
 
 All notable changes to Caelguard Community will be documented here.
 
+## [1.2.0] - 2026-03-15
+### Security Intelligence Updates (Daily Pipeline)
+- IOC Database v1.2.0: Added malicious_publishers tracking category with hightower6eu entry (VirusTotal Blog Feb 2026, legitimate-looking skills masking malware delivery)
+- IOC Database v1.2.0: Bumped version 1.1.0 -> 1.2.0, last_updated 2026-03-15
+
 ## [1.1.0] - 2026-03-13
 ### Security Intelligence Updates (Daily Pipeline)
 - IOC Database v1.1.0: Added missing exfil domains to malicious_domains: update-api-claw.xyz, api.telegram.org, pipedream.com, paste.ee (sync with quarantine-monitor.py EXFIL_DOMAINS)

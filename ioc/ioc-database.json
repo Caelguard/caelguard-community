@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "last_updated": "2026-03-13T02:45:00Z",
+  "version": "1.2.0",
+  "last_updated": "2026-03-15T02:35:00Z",
   "description": "Caelguard IOC Database -- Known malicious hashes, domains, IPs, and patterns for OpenClaw agent security",
   "sources": [
     "Caelguard threat research",
@@ -127,6 +127,17 @@
       "perl\\s+-e\\s+.*decode_base64.*system",
       "printf\\s+.*\\\\x[0-9a-f]{2}.*\\|\\s*(ba)?sh",
       "xxd\\s+-r\\s+-p\\s*\\|\\s*(ba)?sh"
+    ]
+  },
+  "malicious_publishers": {
+    "_description": "Known malicious ClawHub publishers identified through threat research.",
+    "entries": [
+      {
+        "name": "hightower6eu",
+        "source": "VirusTotal Blog Feb 2026",
+        "pattern": "Legitimate-looking skills masking malware delivery",
+        "added": "2026-03-15"
+      }
     ]
   },
   "crypto_wallet_patterns": {
