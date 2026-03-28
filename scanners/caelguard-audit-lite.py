@@ -23,7 +23,7 @@ import sys
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
 
-VERSION = "1.1.3"
+VERSION = "1.2.0"
 
 class C:
     RED = "\033[91m"
@@ -371,8 +371,8 @@ class AuditLite:
 
 
     def check_openclaw_version(self):
-        """Check OpenClaw version against minimum safe version (2026.2.23)."""
-        MINIMUM_SAFE = (2026, 3, 2)
+        """Check OpenClaw version against minimum safe version (2026.3.22)."""
+        MINIMUM_SAFE = (2026, 3, 22)
         rc, out, _ = _run(["openclaw", "--version"])
         if rc != 0 or not out.strip():
             self._add(Finding("GW-11", "gateway", "OpenClaw version unknown",

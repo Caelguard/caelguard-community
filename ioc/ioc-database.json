@@ -1,6 +1,6 @@
 {
-  "version": "1.2.0",
-  "last_updated": "2026-03-15T02:35:00Z",
+  "version": "1.3.0",
+  "last_updated": "2026-03-28T05:30:00Z",
   "description": "Caelguard IOC Database -- Known malicious hashes, domains, IPs, and patterns for OpenClaw agent security",
   "sources": [
     "Caelguard threat research",
@@ -10,7 +10,13 @@
     "Community reports",
     "dailycve.com (2026-03-11: CVE-2026-29787, CVE-2026-32111)",
     "thehackerwire.com (2026-03-10: CVE-2026-26118)",
-    "advisories.gitlab.com (2026-03-09: CVE-2026-27826)"
+    "advisories.gitlab.com (2026-03-09: CVE-2026-27826)",
+    "Blink.new CVE compilation (2026-03-25)",
+    "DailyCVE.com (2026-03-26: exec approval bypass, credential exposure, crypto DoS, memory allocation, IP spoofing)",
+    "RedPacketSecurity (2026-03-21: CVE-2026-32048, CVE-2026-32042, CVE-2026-32064)",
+    "Silverfort ClawHub ranking manipulation disclosure (2026-03-16)",
+    "Reuters/OpenClawd verified skill screening announcement (2026-03-26)",
+    "CyberSecurityNews ClawHub ranking exploit (2026-03-25)"
   ],
   "malicious_hashes": {
     "_description": "SHA-256 hashes of known malicious skill files. Campaign field identifies the threat group/campaign.",
@@ -43,7 +49,15 @@
       "update-api-claw.xyz",
       "api.telegram.org",
       "pipedream.com",
-      "paste.ee"
+      "paste.ee",
+      "cdn.marketstack.io",
+      "telemetry.seotools.dev",
+      "pastebin.com",
+      "transfer.sh",
+      "file.io",
+      "temp.sh",
+      "hastebin.com",
+      "ghostbin.com"
     ]
   },
   "c2_ips": {
@@ -53,30 +67,79 @@
   "typosquat_patterns": {
     "_description": "Known typosquat skill names that impersonate legitimate skills.",
     "legitimate_names": [
-      "web-search", "brave-search", "code", "github", "git-essentials",
-      "docker-essentials", "spotify", "spotify-player", "weather",
-      "skill-creator", "healthcheck", "discord", "clawhub",
-      "frontend-design", "clean-code",
-      "google", "gmail", "google-calendar", "google-drive",
-      "twitter", "x-twitter",
-      "notion", "slack", "linear", "jira", "confluence",
-      "openai", "anthropic"
+      "web-search",
+      "brave-search",
+      "code",
+      "github",
+      "git-essentials",
+      "docker-essentials",
+      "spotify",
+      "spotify-player",
+      "weather",
+      "skill-creator",
+      "healthcheck",
+      "discord",
+      "clawhub",
+      "frontend-design",
+      "clean-code",
+      "google",
+      "gmail",
+      "google-calendar",
+      "google-drive",
+      "twitter",
+      "x-twitter",
+      "notion",
+      "slack",
+      "linear",
+      "jira",
+      "confluence",
+      "openai",
+      "anthropic"
     ],
     "known_typosquats": [
-      "brrave-search", "web-serach", "web_search", "websearch",
-      "brave_search", "bravesearch", "githb", "gihub", "git-hub",
-      "docker_essentials", "doker-essentials",
-      "spotifly", "spotfy", "spotify-playr",
-      "skill-creater", "skilcreator",
-      "healthchek", "helthcheck",
-      "discrod", "dicord",
-      "fronted-design", "frontend-desing",
-      "clean-cod", "cleancode",
-      "gogle", "gooogle", "googgle", "g00gle", "gmai1", "gmaill",
-      "tw1tter", "twiter", "twtter", "twittter",
-      "noti0n", "n0tion", "notoin",
-      "sIack", "slak", "s1ack",
-      "0penai", "opena1", "anthrop1c"
+      "brrave-search",
+      "web-serach",
+      "web_search",
+      "websearch",
+      "brave_search",
+      "bravesearch",
+      "githb",
+      "gihub",
+      "git-hub",
+      "docker_essentials",
+      "doker-essentials",
+      "spotifly",
+      "spotfy",
+      "spotify-playr",
+      "skill-creater",
+      "skilcreator",
+      "healthchek",
+      "helthcheck",
+      "discrod",
+      "dicord",
+      "fronted-design",
+      "frontend-desing",
+      "clean-cod",
+      "cleancode",
+      "gogle",
+      "gooogle",
+      "googgle",
+      "g00gle",
+      "gmai1",
+      "gmaill",
+      "tw1tter",
+      "twiter",
+      "twtter",
+      "twittter",
+      "noti0n",
+      "n0tion",
+      "notoin",
+      "sIack",
+      "slak",
+      "s1ack",
+      "0penai",
+      "opena1",
+      "anthrop1c"
     ]
   },
   "dangerous_prerequisites": {
@@ -151,5 +214,149 @@
       "metamask.*vault|vault.*metamask",
       "phantom.*wallet|wallet.*phantom"
     ]
+  },
+  "known_cves": {
+    "_description": "Known OpenClaw CVEs with affected versions and patch info.",
+    "entries": [
+      {
+        "id": "CVE-2026-25253",
+        "severity": "HIGH",
+        "cvss": "8.8",
+        "description": "Auth token theft via WebSocket hijacking (ClawJacked)",
+        "fixed_in": "2026.3.1",
+        "date": "2026-02-27"
+      },
+      {
+        "id": "CVE-2026-22172",
+        "severity": "CRITICAL",
+        "cvss": "9.9",
+        "description": "WebSocket clients self-declare admin scopes, bypasses authentication",
+        "fixed_in": "2026.3.12",
+        "date": "2026-03-12"
+      },
+      {
+        "id": "CVE-2026-22176",
+        "severity": "HIGH",
+        "cvss": "7.8",
+        "description": "Windows command injection via unescaped env vars in .cmd batch scripts",
+        "fixed_in": "2026.2.19",
+        "date": "2026-03-20"
+      },
+      {
+        "id": "CVE-2026-22179",
+        "severity": "HIGH",
+        "cvss": "N/A",
+        "description": "macOS RCE via command substitution in double-quoted strings",
+        "fixed_in": "2026.2.22",
+        "date": "2026-03-20"
+      },
+      {
+        "id": "CVE-2026-32018",
+        "severity": "MEDIUM",
+        "cvss": "6.6",
+        "description": "Race condition in sandbox registry (containers.json) causes stale state",
+        "fixed_in": "2026.3.12",
+        "date": "2026-03-21"
+      },
+      {
+        "id": "CVE-2026-32042",
+        "severity": "HIGH",
+        "cvss": "N/A",
+        "description": "Privilege escalation: unpaired device self-assigns operator.admin scope",
+        "fixed_in": "2026.2.25",
+        "date": "2026-03-21"
+      },
+      {
+        "id": "CVE-2026-32048",
+        "severity": "HIGH",
+        "cvss": "7.5",
+        "description": "Sandbox escape via cross-agent sessions_spawn (sandbox inheritance not enforced)",
+        "fixed_in": "2026.3.1",
+        "date": "2026-03-21"
+      },
+      {
+        "id": "CVE-2026-32064",
+        "severity": "MEDIUM",
+        "cvss": "N/A",
+        "description": "x11vnc launched without auth for noVNC observer sessions",
+        "fixed_in": "2026.2.21",
+        "date": "2026-03-21"
+      },
+      {
+        "id": "CVE-2026-32065",
+        "severity": "MEDIUM",
+        "cvss": "5.7",
+        "description": "Approval bypass via trailing-space trick in argv tokens",
+        "fixed_in": "2026.2.25",
+        "date": "2026-03-21"
+      },
+      {
+        "id": "CVE-2026-32895",
+        "severity": "MEDIUM",
+        "cvss": "5.3",
+        "description": "Authorization bypass (VulnCheck)",
+        "fixed_in": "2026.2.26",
+        "date": "2026-03-24"
+      },
+      {
+        "id": "CVE-2026-26118",
+        "severity": "HIGH",
+        "cvss": "N/A",
+        "description": "MCP component vulnerability",
+        "fixed_in": "2026.3.12",
+        "date": "2026-03-10"
+      },
+      {
+        "id": "CVE-2026-29787",
+        "severity": "MEDIUM",
+        "cvss": "N/A",
+        "description": "MCP component vulnerability",
+        "fixed_in": "2026.3.12",
+        "date": "2026-03-11"
+      },
+      {
+        "id": "CVE-2026-32111",
+        "severity": "MEDIUM",
+        "cvss": "N/A",
+        "description": "MCP component vulnerability",
+        "fixed_in": "2026.3.12",
+        "date": "2026-03-11"
+      },
+      {
+        "id": "CVE-2026-28468",
+        "severity": "HIGH",
+        "cvss": "N/A",
+        "description": "Browser bridge auth bypass (WebSocket hijacking)",
+        "fixed_in": "2026.2.14",
+        "date": "2026-03-12"
+      },
+      {
+        "id": "CVE-2026-29610",
+        "severity": "HIGH",
+        "cvss": "N/A",
+        "description": "PATH hijacking via TCP 18789 log poisoning",
+        "fixed_in": "2026.2.14",
+        "date": "2026-03-12"
+      },
+      {
+        "id": "CVE-2026-27826",
+        "severity": "MEDIUM",
+        "cvss": "N/A",
+        "description": "mcp-atlassian SSRF",
+        "fixed_in": "2026.3.07",
+        "date": "2026-03-09"
+      }
+    ]
+  },
+  "minimum_safe_version": "2026.3.22",
+  "minimum_safe_version_note": "Covers all known CVEs as of 2026-03-28. Versions below 2026.3.22 are vulnerable to exec approval bypass, credential exposure, pre-auth crypto DoS, and memory allocation issues.",
+  "threat_intel": {
+    "_description": "Current threat landscape for OpenClaw ecosystem.",
+    "exposed_instances": "42,665+ (Censys, Jan 2026)",
+    "malicious_clawhub_skills": "12% of marketplace (Silverfort/Reuters, Mar 26 2026)",
+    "clawhub_ranking_manipulation": "Disclosed Mar 16 2026 by Silverfort. Exposed RPC endpoint allowed inflating download counts. Fixed within 24h. PoC achieved 3,900 executions across 50 cities in 6 days.",
+    "fake_installers": "Counterfeit OpenClaw packages on open-source repos (Reuters, Mar 26 2026)",
+    "total_cves_2026": 16,
+    "government_advisories": "2 (China CNCERT/CC, Mar 2026)"
   }
 }

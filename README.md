@@ -106,10 +106,10 @@ ShellGuard is the only scanner that catches **reasoning-layer attacks** -- tool 
 
 | Threat | Scale | Source |
 |--------|-------|--------|
-| Exposed OpenClaw instances | **40,000+** | Censys / CNCERT |
+| Exposed OpenClaw instances | **42,665+** | Censys / CNCERT |
 | Vulnerable to one-click RCE | **15,000+** | Security researchers |
-| Malicious skills on ClawHub | **1,000+** | Multiple vendors |
-| CVEs disclosed (March 2026) | **6 new** | NVD |
+| Malicious skills on ClawHub | **12% of marketplace** | Multiple vendors |
+| CVEs disclosed (2026) | **16 total** | NVD |
 | Government security advisories | **2 (China CNCERT/CC)** | First-ever for an AI agent platform |
 
 ---
